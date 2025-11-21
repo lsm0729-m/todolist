@@ -85,3 +85,8 @@ interface Todo {
 4. **ID 중복 문제** ([상세 보기](./troubleshooting/04_ID_중복_문제.md))
    - 문제: `todos.length + 1` 방식은 삭제 후 추가 시 ID 중복 발생
    - 해결: 타임스탬프 기반 고유 ID 생성 (`Date.now()`)
+
+5. **localStorage 자동 저장 문제** ([상세 보기](./troubleshooting/05_localStorage_자동저장_문제.md))
+   - 문제: `setState` 직후 `localStorage` 저장 시 이전 값이 저장됨
+   - 원인: React의 `setState`는 비동기로 동작
+   - 해결: 업데이트된 값을 변수에 저장 후 사용

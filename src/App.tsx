@@ -11,13 +11,19 @@ import {
 } from './TodoHelpers';
 
 export default function App() {
-    const [todos, setTodos] = useState<Todo[]>([]);
+    // useState 초기값으로 localStorage에서 바로 불러오기 (최초 1번만 실행됨)
+    const [todos, setTodos] = useState<Todo[]>(() => {
+        const savedTodos = localStorage.getItem("todos");
+        if (savedTodos) {
+            return JSON.parse(savedTodos);
+        }
+        return [];  // 저장된 데이터 없으면 빈 배열
+    });
 
     const [searchText, setSearchText] = useState('');
     const [inputText, setInputText] = useState('');
 
     const [filter, setFilter] = useState('전체');
-
 
     function addTodo() {
         if (inputText.trim() === '') return;
@@ -32,7 +38,10 @@ export default function App() {
             children: []
         };
 
-        setTodos([...todos, newTodo]);
+
+        const newTodos = [...todos, newTodo];
+        setTodos(newTodos);
+        localStorage.setItem("todos", JSON.stringify(newTodos));
         setInputText('');
     }
 
@@ -45,6 +54,7 @@ export default function App() {
             return updateParentCompleted(todo);
         });
         setTodos(finalTodos);
+        localStorage.setItem("todos", JSON.stringify(finalTodos));
     }
 
 
@@ -55,32 +65,29 @@ export default function App() {
             return updateParentCompleted(todo);
         });
         setTodos(finalTodos);
+        localStorage.setItem("todos", JSON.stringify(finalTodos));
     }
 
 
     function toggleTodo(id: string) {
-        setTodos(getToggleTodo(todos, id));
+        const updatedTodos = getToggleTodo(todos, id);
+        setTodos(updatedTodos);
+        localStorage.setItem("todos", JSON.stringify(updatedTodos));
     }
 
 
     function editTodo(id: string, newText: string) {
-        setTodos(getEditTodo(todos, id, newText));
+        const updatedTodos = getEditTodo(todos, id, newText);
+        setTodos(updatedTodos);
+        localStorage.setItem("todos", JSON.stringify(updatedTodos));
     }
 
     function toggleExpand(id: string) {
-        setTodos(getToggleExpand(todos, id));
+        const updatedTodos = getToggleExpand(todos, id);
+        setTodos(updatedTodos);
+        localStorage.setItem("todos", JSON.stringify(updatedTodos));
     }
     
-    function handleSaveData() {
-        localStorage.setItem("todos", JSON.stringify(todos));
-    }
-
-    function handleLoadData() {
-        const savedTodos = localStorage.getItem("todos");
-        if (savedTodos) {
-            setTodos(JSON.parse(savedTodos));
-        }
-    }
 
     function handleExportData() {
         const jsonString = JSON.stringify(todos, null, 2);
@@ -112,6 +119,7 @@ export default function App() {
                 try {
                     const jsonData = JSON.parse(event.target?.result as string);
                     setTodos(jsonData);
+                    localStorage.setItem("todos", JSON.stringify(jsonData));
                     alert('성공!');
                 } catch (error) {
                     alert('오류가 발생');
@@ -123,14 +131,12 @@ export default function App() {
         input.click();
     }
 
-    return (
+    return (     
         <div>
             <h1>Todo List</h1>
             
             <div className="data-controls">
                 <DataControlButtons 
-                    onSave={handleSaveData}
-                    onLoad={handleLoadData}
                     onImport={handleImportData}
                     onExport={handleExportData}
                 />
@@ -176,20 +182,14 @@ export default function App() {
 
 
 function DataControlButtons({ 
-    onSave, 
-    onLoad,
     onImport,
     onExport
 }: { 
-    onSave: () => void; 
-    onLoad: () => void;
     onImport: () => void;
     onExport: () => void;
 }) {
     return (
         <div>
-            <button onClick={onSave}>데이터 저장</button>
-            <button onClick={onLoad}>데이터 불러오기</button>
 
             <button onClick={onImport}>파일 가져오기</button>
             <button onClick={onExport}>파일 내보내기</button>
