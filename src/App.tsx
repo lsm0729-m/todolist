@@ -1,7 +1,7 @@
 import React, { useState } from 'react'; 
-import { exampleTodoData as todoData } from "../interface/data";
-import { CategoryNode, ItemNode, NoteNode, RootNode, SectionNode, SubtaskNode } from '../interface/todo';
-import { BaseDocumentRenderer, TodoHandlers } from '../interface/Rander';
+import { exampleTodoData as todoData } from "./interface/data";
+import { CategoryNode, ItemNode, NoteNode, RootNode, SectionNode, SubtaskNode } from './interface/todo';
+import { BaseDocumentRenderer, TodoHandlers } from './interface/Rander';
 import { RootDocument, CategoryDocument, SectionDocument, ItemDocument, SubtaskDocument, NoteDocument } from './components';
 import './App.css';
 import { updateNodeInTree, deleteNodeInTree, addNodeToTree } from './utils/treeUtils';

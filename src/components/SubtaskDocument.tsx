@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SubtaskNode } from '../../interface/todo';
+import { SubtaskNode } from '../interface/todo';
 
 interface SubtaskDocumentProps {
     node: SubtaskNode;

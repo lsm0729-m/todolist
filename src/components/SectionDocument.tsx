@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SectionNode } from '../../interface/todo';
+import { SectionNode } from '../interface/todo';
 
 interface SectionDocumentProps {
     node: SectionNode;

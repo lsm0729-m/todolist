@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ItemNode } from '../../interface/todo';
+import { DocumentNode, ItemNode } from '../interface/todo';
 
 interface ItemDocumentProps {
     node: ItemNode;
@@ -8,7 +8,7 @@ interface ItemDocumentProps {
     onAddNote: () => void;
     onEdit: (title: string, priority: "high" | "medium" | "low") => void;
     onDelete: () => void;
-    renderChildren: (children: any[]) => React.ReactNode[];
+    renderChildren: (children:  DocumentNode[]) => React.ReactNode[];
 }
 
 export const ItemDocument: React.FC<ItemDocumentProps> = ({ 

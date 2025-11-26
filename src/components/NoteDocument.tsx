@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NoteNode } from '../../interface/todo';
+import { NoteNode } from '../interface/todo';
 
 interface NoteDocumentProps {
     node: NoteNode;

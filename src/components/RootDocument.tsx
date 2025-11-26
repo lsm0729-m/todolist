@@ -1,5 +1,5 @@
 import React from 'react';
-import { RootNode } from '../../interface/todo';
+import { RootNode } from '../interface/todo';
 
 interface RootDocumentProps {
     node: RootNode;

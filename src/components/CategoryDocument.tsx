@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CategoryNode } from '../../interface/todo';
+import { CategoryNode } from '../interface/todo';
 
 interface CategoryDocumentProps {
     node: CategoryNode;
