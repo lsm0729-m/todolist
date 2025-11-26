@@ -115,19 +115,17 @@ export const ItemDocument: React.FC<ItemDocumentProps> = ({
                                 onChange={onToggleComplete}
                             />
                             <div className="item-details">
-                                <div className={`item-title ${node.completed ? 'completed' : ''}`}>
+                                <span className={`priority-badge ${priorityClass}`}>
+                                    {priorityLabel}
+                                </span>
+                                <span className={`item-title ${node.completed ? 'completed' : ''}`}>
                                     {node.title}
-                                </div>
-                                <div className="item-meta">
-                                    <span className={`priority-badge ${priorityClass}`}>
-                                        {priorityLabel}
+                                </span>
+                                {node.dueDate && (
+                                    <span className="item-due-date">
+                                        {node.dueDate}
                                     </span>
-                                    {node.dueDate && (
-                                        <span className="item-due-date">
-                                            📅 {node.dueDate}
-                                        </span>
-                                    )}
-                                </div>
+                                )}
                             </div>
                         </div>
                         {(isHovered || isEditing) && (

@@ -1,4 +1,4 @@
-import type { DocumentNode, RootNode } from "../interface/todo";
+import type { DocumentNode, RootNode } from "../../interface/todo";
 
 //CRUD 함수 정의 ~
 

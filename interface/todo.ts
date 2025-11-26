@@ -36,7 +36,6 @@ export interface SectionNode extends BaseNode {
   children: (ItemNode | NoteNode | SubtaskNode)[];
 }
 
-
 export interface SubtaskNode extends BaseNode {
   type: "TodoSubtask";
   title: string;
@@ -44,8 +43,8 @@ export interface SubtaskNode extends BaseNode {
 }
 
 export interface NoteNode extends BaseNode {
-    type: "TodoNote";
-    content: string;
+  type: "TodoNote";
+  content: string;
 }
 
 

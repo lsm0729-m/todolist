@@ -16,7 +16,7 @@ export const CategoryDocument: React.FC<CategoryDocumentProps> = ({
     onAddSection,  
     onSettings, 
     onDelete,
-    renderChildren 
+    renderChildren,
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(node.title);

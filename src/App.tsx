@@ -4,7 +4,9 @@ import { CategoryNode, ItemNode, NoteNode, RootNode, SectionNode, SubtaskNode } 
 import { BaseDocumentRenderer, TodoHandlers } from '../interface/Rander';
 import { RootDocument, CategoryDocument, SectionDocument, ItemDocument, SubtaskDocument, NoteDocument } from './components';
 import './App.css';
-import { updateNodeInTree, deleteNodeInTree, addNodeToTree } from './treeUtils';
+import { updateNodeInTree, deleteNodeInTree, addNodeToTree } from './utils/treeUtils';
+
+
 class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
 
     constructor(private handlers: TodoHandlers) {
@@ -59,7 +61,7 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
                 onEdit={(newTitle: string) => this.handlers.onEditSection(node.id, newTitle)}
 
 
-                renderChildren={(children) => children.map((child) => this.render(child))}
+                renderChildren={() => this.renderChildren(node.children)}
             />
         );
     }
@@ -77,7 +79,7 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
 
 
                 onDelete={() => this.handlers.onDeleteItem(node.id)}
-                renderChildren={(children) => children.map((child) => this.render(child))}
+                renderChildren={() => this.renderChildren(node.children)}
             />
         );
     }

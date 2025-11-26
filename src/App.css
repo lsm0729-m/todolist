@@ -206,6 +206,9 @@ Root Container
 
 .item-details {
     flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .item-title {
@@ -220,13 +223,15 @@ Root Container
 }
 
 .item-meta {
-    display: flex;
-    gap: 8px;
-    margin-top: 4px;
-    align-items: center;
+    display: none; /* 더 이상 사용하지 않으므로 숨김 */
 }
 
-/* Priority - 차분한 색상 */
+.item-due-date {
+    font-size: 11px;
+    color: #95a5a6;
+}
+
+/* Priority - 색상으로 구분 */
 .priority-badge {
     font-size: 10px;
     padding: 2px 8px;
@@ -236,26 +241,21 @@ Root Container
 }
 
 .priority-high {
-    background-color: #f8f9fa;
-    color: #495057;
-    border-color: #dee2e6;
+    background-color: #fee2e2;
+    color: #dc2626;
+    border-color: #fca5a5;
 }
 
 .priority-medium {
-    background-color: #f8f9fa;
-    color: #6c757d;
-    border-color: #dee2e6;
+    background-color: #fed7aa;
+    color: #ea580c;
+    border-color: #fdba74;
 }
 
 .priority-low {
-    background-color: #f8f9fa;
-    color: #95a5a6;
-    border-color: #dee2e6;
-}
-
-.item-due-date {
-    font-size: 11px;
-    color: #95a5a6;
+    background-color: #dcfce7;
+    color: #16a34a;
+    border-color: #86efac;
 }
 
 .item-actions {

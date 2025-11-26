@@ -42,7 +42,7 @@ export abstract class BaseDocumentRenderer<T> implements DocumentRenderer<T> {
     }
   }
 
-  protected renderChildren(children: DocumentNode[]): T[] {  // 어디에 쓰이는거지 ..?
+  protected renderChildren(children: DocumentNode[]): T[] {
     return children.map((child: DocumentNode) => this.render(child));
   }
 }
@@ -77,4 +77,5 @@ export interface TodoHandlers {
   // Note 관련
   onEditNote: (noteId: string, newContent: string) => void;
   onDeleteNote: (noteId: string) => void;
+
 }
