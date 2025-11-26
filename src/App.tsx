@@ -1,10 +1,9 @@
-import React, { useState } from 'react'; 
+import React, { useContext, createContext} from 'react'; 
 import { exampleTodoData, exampleTodoData as todoData } from "./interface/data";
 import { CategoryNode, ItemNode, NoteNode, RootNode, SectionNode, SubtaskNode } from './interface/todo';
 import { BaseDocumentRenderer, TodoHandlers } from './interface/Rander';
 import { RootDocument, CategoryDocument, SectionDocument, ItemDocument, SubtaskDocument, NoteDocument } from './components';
 import './App.css';
-import { updateNodeInTree, deleteNodeInTree, addNodeToTree } from './utils/treeUtils';
 import { useTodo } from './hooks/useTodo';
 
 
@@ -21,8 +20,6 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
         return (
             <RootDocument
                 node={node}
-
-                onAddCategory={this.handlers.onAddCategory} 
                 renderChildren={(children) => children.map((child) => this.render(child))}
             />
         );
@@ -33,12 +30,6 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
             <CategoryDocument
                 key={node.id}
                 node={node}
-
-                onAddTodo={() => this.handlers.onAddTodoToCategory(node.id)} 
-                onAddSection={() => this.handlers.onAddSection(node.id)} 
-                onSettings={(newTitle: string, newColor: string) => this.handlers.onUpdateCategorySettings(node.id, newTitle, newColor)} 
-
-                onDelete={() => this.handlers.onDeleteCategory(node.id)}
                 renderChildren={(children) => children.map((child) => this.render(child))}
             />
         );
@@ -49,19 +40,6 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
             <SectionDocument
                 key={node.id}
                 node={node}
-
-                // [] 상위위 하위 연동 추가 구현 (우선순위 하위)
-                onToggleCollapse={() => this.handlers.onToggleSection(node.id)}
-
-                onAddTodo={() => this.handlers.onAddTodoItem(node.id)}
-                onAddSubtask={() => this.handlers.onAddSubtask(node.id)}
-                onAddNote={() => this.handlers.onAddNote(node.id)}
-
-                onDelete={() => this.handlers.onDeleteSection(node.id)}
-
-                onEdit={(newTitle: string) => this.handlers.onEditSection(node.id, newTitle)}
-
-
                 renderChildren={() => this.renderChildren(node.children)}
             />
         );
@@ -72,14 +50,6 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
             <ItemDocument
                 key={node.id}
                 node={node}
-                onToggleComplete={() => this.handlers.onToggleItem(node.id)}
-                onAddSubtask={() => this.handlers.onAddSubtask(node.id)}
-                onAddNote={() => this.handlers.onAddNote(node.id)}
-
-                onEdit={(newTitle: string, newPriority: "high" | "medium" | "low") => this.handlers.onEditItem(node.id, newTitle, newPriority)}
-
-
-                onDelete={() => this.handlers.onDeleteItem(node.id)}
                 renderChildren={() => this.renderChildren(node.children)}
             />
         );
@@ -90,9 +60,6 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
             <SubtaskDocument
                 key={node.id}
                 node={node}
-                onToggleComplete={() => this.handlers.onToggleSubtask(node.id)}
-                onEdit={(newTitle: string) => this.handlers.onEditSubtask(node.id, newTitle)}
-                onDelete={() => this.handlers.onDeleteSubtask(node.id)}
             />
         );
     }
@@ -102,16 +69,20 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
             <NoteDocument
                 key={node.id}
                 node={node}
-                onEdit={(newContent: string) => this.handlers.onEditNote(node.id, newContent)}
-                onDelete={() => this.handlers.onDeleteNote(node.id)}
             />
         );
     }
 }
 
+export const TodoContext = createContext<{ data: RootNode; handlers: TodoHandlers }>({ data: exampleTodoData, handlers: {} as TodoHandlers });
+
 export const App: React.FC = () => {
     const { data, handlers } = useTodo(exampleTodoData);
 
     const renderer = new ReactTodoRenderer(handlers);
-    return <div>{renderer.RenderRoot(data)}</div>;
+    return (
+        <TodoContext.Provider value={{ data, handlers }}>
+            <div>{renderer.RenderRoot(data)}</div>
+        </TodoContext.Provider>
+    );
 };

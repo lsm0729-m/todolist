@@ -1,27 +1,24 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { CategoryNode } from '../interface/todo';
+import { TodoContext } from '../App';
 
 interface CategoryDocumentProps {
     node: CategoryNode;
-    onAddTodo: () => void;
-    onAddSection: () => void; 
-    onSettings: (newTitle: string, newColor: string) => void;
-    onDelete: () => void;
+    key: string;
     renderChildren: (children: any[]) => React.ReactNode[];
 }
 
 export const CategoryDocument: React.FC<CategoryDocumentProps> = ({ 
     node, 
-    onAddTodo,
-    onAddSection,  
-    onSettings, 
-    onDelete,
+    key,
     renderChildren,
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(node.title);
     const [editColor, setEditColor] = useState(node.color);
     const [isHovered, setIsHovered] = useState(false);
+
+    const { handlers } = useContext(TodoContext);
 
     // 프리셋 색상 5개
     const colorPresets = [
@@ -40,7 +37,7 @@ export const CategoryDocument: React.FC<CategoryDocumentProps> = ({
 
     const handleSave = () => {
         if (editTitle.trim()) {
-            onSettings(editTitle.trim(), editColor);
+            handlers.onUpdateCategorySettings(node.id, editTitle.trim(), editColor);
             setIsEditing(false);
         }
     };
@@ -110,7 +107,7 @@ export const CategoryDocument: React.FC<CategoryDocumentProps> = ({
                                 <button 
                                     className="btn btn-secondary"
                                     style={{ backgroundColor: node.color }}
-                                    onClick={onAddTodo}
+                                    onClick={() => handlers.onAddTodoToCategory(node.id)}
                                 >
                                     + 할일 추가
                                 </button>
@@ -120,14 +117,14 @@ export const CategoryDocument: React.FC<CategoryDocumentProps> = ({
                                         backgroundColor: node.color,
                                         opacity: 0.9
                                     }}
-                                    onClick={onAddSection}
+                                    onClick={() => handlers.onAddSection(node.id)}
                                 >
                                     📂
                                 </button>
                                 <button className="btn btn-secondary" onClick={handleSettingsClick}>
                                     ⚙️
                                 </button>
-                                <button className="btn btn-danger" onClick={onDelete}>
+                                <button className="btn btn-danger" onClick={() => handlers.onDeleteCategory(node.id)}>
                                     🗑️
                                 </button>
                             </div>

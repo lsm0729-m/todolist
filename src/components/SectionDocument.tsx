@@ -1,30 +1,21 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { SectionNode } from '../interface/todo';
+import { TodoContext } from '../App';
 
 interface SectionDocumentProps {
     node: SectionNode;
-    onToggleCollapse: () => void;
-    onAddTodo: () => void;
-    onAddSubtask: () => void; 
-    onAddNote: () => void;
-    onEdit: (newTitle: string) => void;  
-    onDelete: () => void;
     renderChildren: (children: any[]) => React.ReactNode[];
 }
 
 export const SectionDocument: React.FC<SectionDocumentProps> = ({ 
     node, 
-    onToggleCollapse, 
-    onAddTodo,
-    onAddSubtask,  
-    onAddNote,
-    onEdit, 
-    onDelete,
     renderChildren 
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(node.title);
     const [isHovered, setIsHovered] = useState(false);
+
+    const { handlers } = useContext(TodoContext);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -33,7 +24,7 @@ export const SectionDocument: React.FC<SectionDocumentProps> = ({
 
     const handleConfirm = () => {
         if (editValue.trim()) {
-            onEdit(editValue);
+            handlers.onEditSection(node.id, editValue.trim());
             setIsEditing(false);
         }
     };
@@ -51,7 +42,7 @@ export const SectionDocument: React.FC<SectionDocumentProps> = ({
         >
             <div className="section-header">
                 <div className="section-title-wrapper">
-                    <button className="section-toggle-btn" onClick={onToggleCollapse}>
+                    <button className="section-toggle-btn" onClick={() => handlers.onToggleSection(node.id)}>
                         {node.collapsed ? '▶' : '▼'}
                     </button>
                     
@@ -87,13 +78,13 @@ export const SectionDocument: React.FC<SectionDocumentProps> = ({
                 </div>
                 {(isHovered || isEditing) && (
                     <div className="section-actions">
-                        <button className="btn btn-secondary btn-small" onClick={onAddTodo}>
+                        <button className="btn btn-secondary btn-small" onClick={() => handlers.onAddTodoToCategory(node.id)}>
                             + 할일
                         </button>
-                        <button className="btn btn-add btn-small" onClick={onAddSubtask}>
+                        <button className="btn btn-add btn-small" onClick={() => handlers.onAddSubtask(node.id)}>
                             + 하위작업
                         </button>
-                        <button className="btn btn-note btn-small" onClick={onAddNote}>
+                        <button className="btn btn-note btn-small" onClick={() => handlers.onAddNote(node.id)}>
                             📋
                         </button>
                         {!isEditing && (
@@ -101,7 +92,7 @@ export const SectionDocument: React.FC<SectionDocumentProps> = ({
                                 ✏️
                             </button>
                         )}
-                        <button className="btn btn-delete btn-small" onClick={onDelete}>
+                        <button className="btn btn-delete btn-small" onClick={() => handlers.onDeleteSection(node.id)}>
                             ✕
                         </button>
                     </div>

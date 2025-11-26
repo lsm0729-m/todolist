@@ -1,22 +1,19 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { SubtaskNode } from '../interface/todo';
+import { TodoContext } from '../App';
 
 interface SubtaskDocumentProps {
     node: SubtaskNode;
-    onToggleComplete: () => void;
-    onEdit: (newTitle: string) => void;
-    onDelete: () => void;
 }
 
 export const SubtaskDocument: React.FC<SubtaskDocumentProps> = ({ 
     node, 
-    onToggleComplete,
-    onEdit,
-    onDelete 
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(node.title);
     const [isHovered, setIsHovered] = useState(false);
+
+    const { handlers } = useContext(TodoContext);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -26,7 +23,7 @@ export const SubtaskDocument: React.FC<SubtaskDocumentProps> = ({
     const handleConfirm = () => {
         if (editValue.trim()) {
             console.log('editValue', editValue);
-            onEdit(editValue);
+            handlers.onEditSubtask(node.id, editValue.trim());
             setIsEditing(false);
         }
     };
@@ -54,7 +51,7 @@ export const SubtaskDocument: React.FC<SubtaskDocumentProps> = ({
                 type="checkbox" 
                 checked={node.completed}
                 className="subtask-checkbox"
-                onChange={onToggleComplete}
+                onChange={() => handlers.onToggleSubtask(node.id)}
                 disabled={isEditing}
             />
             
@@ -93,7 +90,7 @@ export const SubtaskDocument: React.FC<SubtaskDocumentProps> = ({
                             <button className="btn btn-edit btn-tiny" onClick={handleEditClick}>
                                 ✏️
                             </button>
-                            <button className="btn btn-delete btn-tiny" onClick={onDelete}>
+                            <button className="btn btn-delete btn-tiny" onClick={() => handlers.onDeleteSubtask(node.id)}>
                                 ✕
                             </button>
                         </div>

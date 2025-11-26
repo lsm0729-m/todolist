@@ -1,29 +1,27 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { DocumentNode, ItemNode } from '../interface/todo';
+import { TodoContext } from '../App';
 
 interface ItemDocumentProps {
     node: ItemNode;
-    onToggleComplete: () => void;
-    onAddSubtask: () => void;
-    onAddNote: () => void;
-    onEdit: (title: string, priority: "high" | "medium" | "low") => void;
-    onDelete: () => void;
+    key: string;
     renderChildren: (children:  DocumentNode[]) => React.ReactNode[];
 }
 
 export const ItemDocument: React.FC<ItemDocumentProps> = ({ 
     node, 
-    onToggleComplete,
-    onAddSubtask,
-    onAddNote,
-    onEdit,
-    onDelete,
+    key,
     renderChildren 
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(node.title);
     const [editPriority, setEditPriority] = useState<"high" | "medium" | "low">(node.priority);
     const [isHovered, setIsHovered] = useState(false);
+
+
+    const { handlers } = useContext(TodoContext);
+    
+
 
     const priorityClass = `priority-${node.priority}`;
     const priorityLabel = node.priority === 'high' ? '높음' : node.priority === 'medium' ? '중간' : '낮음';
@@ -36,7 +34,7 @@ export const ItemDocument: React.FC<ItemDocumentProps> = ({
 
     const handleSave = () => {
         if (editTitle.trim()) {
-            onEdit(editTitle.trim(), editPriority);
+            handlers.onEditItem(node.id, editTitle.trim(), editPriority);
             setIsEditing(false);
         }
     };
@@ -61,7 +59,7 @@ export const ItemDocument: React.FC<ItemDocumentProps> = ({
                             type="checkbox" 
                             checked={node.completed}
                             className="item-checkbox"
-                            onChange={onToggleComplete}
+                            onChange={() => handlers.onToggleItem(node.id)}
                             disabled
                         />
                         <input
@@ -112,7 +110,7 @@ export const ItemDocument: React.FC<ItemDocumentProps> = ({
                                 type="checkbox" 
                                 checked={node.completed}
                                 className="item-checkbox"
-                                onChange={onToggleComplete}
+                                onChange={() => handlers.onToggleItem(node.id)}
                             />
                             <div className="item-details">
                                 <span className={`priority-badge ${priorityClass}`}>
@@ -130,16 +128,16 @@ export const ItemDocument: React.FC<ItemDocumentProps> = ({
                         </div>
                         {(isHovered || isEditing) && (
                             <div className="item-actions">
-                                <button className="btn btn-add btn-small" onClick={onAddSubtask}>
+                                <button className="btn btn-add btn-small" onClick={() => handlers.onAddSubtask(node.id)}>
                                     + 하위작업
                                 </button>
-                                <button className="btn btn-note btn-small" onClick={onAddNote}>
+                                <button className="btn btn-note btn-small" onClick={() => handlers.onAddNote(node.id)}>
                                     📋
                                 </button>
                                 <button className="btn btn-edit btn-small" onClick={handleEditClick}>
                                     ⚙️
                                 </button>
-                                <button className="btn btn-delete btn-small" onClick={onDelete}>
+                                <button className="btn btn-delete btn-small" onClick={() => handlers.onDeleteItem(node.id)}>
                                     ✕
                                 </button>
                             </div>

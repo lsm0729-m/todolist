@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NoteNode } from '../interface/todo';
+import { TodoContext } from '../App';
 
 interface NoteDocumentProps {
     node: NoteNode;
-    onEdit: (newContent: string) => void;
-    onDelete: () => void;
 }
 
 export const NoteDocument: React.FC<NoteDocumentProps> = ({ 
     node, 
-    onEdit, 
-    onDelete 
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(node.content);
     const [isHovered, setIsHovered] = useState(false);
+
+    const { handlers } = useContext(TodoContext);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -23,7 +22,7 @@ export const NoteDocument: React.FC<NoteDocumentProps> = ({
 
     const handleConfirm = () => {
         if (editValue.trim()) {
-            onEdit(editValue.trim());
+            handlers.onEditNote(node.id, editValue.trim());
             setIsEditing(false);
         }
     };
@@ -77,7 +76,7 @@ export const NoteDocument: React.FC<NoteDocumentProps> = ({
                             <button className="btn btn-warning btn-tiny" onClick={handleEditClick}>
                                 ✏️
                             </button>
-                            <button className="btn btn-delete btn-tiny" onClick={onDelete}>
+                            <button className="btn btn-delete btn-tiny" onClick={() => handlers.onDeleteNote(node.id)}>
                                 ✕
                             </button>
                         </div>
