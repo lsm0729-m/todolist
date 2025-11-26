@@ -116,7 +116,7 @@ export const App: React.FC = () => {
     const [data, setData] = useState<RootNode>(todoData);
 
     const handlers: TodoHandlers = {
-        // Section 관련 핸들러
+
         onToggleSection: (sectionId: string) => {
             setData(updateNodeInTree(data, sectionId, (node) => ({
                 ...node,
@@ -137,7 +137,6 @@ export const App: React.FC = () => {
             setData(addNodeToTree(data, sectionId, newTodo) as RootNode);
         },
 
-        // Category 관련 핸들러
         onAddCategory: () => {
             const newCategory: CategoryNode = {
                 type: "TodoCategory",
@@ -177,7 +176,6 @@ export const App: React.FC = () => {
             setData(prev => addNodeToTree(prev, categoryId, newTodo) as RootNode);
         },
 
-        // Item 관련 핸들러
         onToggleItem: (itemId: string) => {
             setData(updateNodeInTree(data, itemId, (node) => ({
                 ...node,
@@ -258,7 +256,6 @@ export const App: React.FC = () => {
             setData(deleteNodeInTree(data, subtaskId) as RootNode);
         },
 
-        // Note 관련 핸들러
         onEditNote: (noteId: string, newContent: string) => {
             setData(updateNodeInTree(data, noteId, (node) => ({
                 ...node,

@@ -24,6 +24,7 @@ export const SectionDocument: React.FC<SectionDocumentProps> = ({
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(node.title);
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -43,7 +44,11 @@ export const SectionDocument: React.FC<SectionDocumentProps> = ({
     };
 
     return (
-        <div className="section-container">
+        <div 
+            className="section-container"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <div className="section-header">
                 <div className="section-title-wrapper">
                     <button className="section-toggle-btn" onClick={onToggleCollapse}>
@@ -80,25 +85,27 @@ export const SectionDocument: React.FC<SectionDocumentProps> = ({
                         </h3>
                     )}
                 </div>
-                <div className="section-actions">
-                    <button className="btn btn-secondary btn-small" onClick={onAddTodo}>
-                        + 할일
-                    </button>
-                    <button className="btn btn-add btn-small" onClick={onAddSubtask}>
-                        + 하위작업
-                    </button>
-                    <button className="btn btn-note btn-small" onClick={onAddNote}>
-                        📋
-                    </button>
-                    {!isEditing && (
-                        <button className="btn btn-edit btn-small" onClick={handleEditClick}>
-                            ✏️
+                {(isHovered || isEditing) && (
+                    <div className="section-actions">
+                        <button className="btn btn-secondary btn-small" onClick={onAddTodo}>
+                            + 할일
                         </button>
-                    )}
-                    <button className="btn btn-delete btn-small" onClick={onDelete}>
-                        ✕
-                    </button>
-                </div>
+                        <button className="btn btn-add btn-small" onClick={onAddSubtask}>
+                            + 하위작업
+                        </button>
+                        <button className="btn btn-note btn-small" onClick={onAddNote}>
+                            📋
+                        </button>
+                        {!isEditing && (
+                            <button className="btn btn-edit btn-small" onClick={handleEditClick}>
+                                ✏️
+                            </button>
+                        )}
+                        <button className="btn btn-delete btn-small" onClick={onDelete}>
+                            ✕
+                        </button>
+                    </div>
+                )}
             </div>
             {!node.collapsed && (
                 <div className="section-children">

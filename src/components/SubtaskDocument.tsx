@@ -4,7 +4,7 @@ import { SubtaskNode } from '../../interface/todo';
 interface SubtaskDocumentProps {
     node: SubtaskNode;
     onToggleComplete: () => void;
-    onEdit: (newTitle: string) => void;  // ✨ 문자열을 받도록 변경
+    onEdit: (newTitle: string) => void;
     onDelete: () => void;
 }
 
@@ -16,6 +16,7 @@ export const SubtaskDocument: React.FC<SubtaskDocumentProps> = ({
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(node.title);
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -44,7 +45,11 @@ export const SubtaskDocument: React.FC<SubtaskDocumentProps> = ({
     };
 
     return (
-        <div className="subtask-container">
+        <div 
+            className="subtask-container"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <input 
                 type="checkbox" 
                 checked={node.completed}
@@ -83,14 +88,16 @@ export const SubtaskDocument: React.FC<SubtaskDocumentProps> = ({
                     <span className={`subtask-title ${node.completed ? 'completed' : ''}`}>
                         {node.title}
                     </span>
-                    <div className="subtask-actions">
-                        <button className="btn btn-edit btn-tiny" onClick={handleEditClick}>
-                            ✏️
-                        </button>
-                        <button className="btn btn-delete btn-tiny" onClick={onDelete}>
-                            ✕
-                        </button>
-                    </div>
+                    {(isHovered || isEditing) && (
+                        <div className="subtask-actions">
+                            <button className="btn btn-edit btn-tiny" onClick={handleEditClick}>
+                                ✏️
+                            </button>
+                            <button className="btn btn-delete btn-tiny" onClick={onDelete}>
+                                ✕
+                            </button>
+                        </div>
+                    )}
                 </>
             )}
         </div>

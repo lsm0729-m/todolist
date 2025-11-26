@@ -21,6 +21,7 @@ export const CategoryDocument: React.FC<CategoryDocumentProps> = ({
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(node.title);
     const [editColor, setEditColor] = useState(node.color);
+    const [isHovered, setIsHovered] = useState(false);
 
     // 프리셋 색상 5개
     const colorPresets = [
@@ -54,6 +55,8 @@ export const CategoryDocument: React.FC<CategoryDocumentProps> = ({
         <div 
             className="category-container"
             style={{ borderColor: isEditing ? editColor : node.color }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <div className="category-header">
                 {isEditing ? (
@@ -102,31 +105,33 @@ export const CategoryDocument: React.FC<CategoryDocumentProps> = ({
                                 {node.title}
                             </h2>
                         </div>
-                        <div className="category-actions">
-                            <button 
-                                className="btn btn-secondary"
-                                style={{ backgroundColor: node.color }}
-                                onClick={onAddTodo}
-                            >
-                                + 할일 추가
-                            </button>
-                            <button 
-                                className="btn btn-secondary btn-folder"
-                                style={{ 
-                                    backgroundColor: node.color,
-                                    opacity: 0.9
-                                }}
-                                onClick={onAddSection}
-                            >
-                                📂
-                            </button>
-                            <button className="btn btn-secondary" onClick={handleSettingsClick}>
-                                ⚙️
-                            </button>
-                            <button className="btn btn-danger" onClick={onDelete}>
-                                🗑️
-                            </button>
-                        </div>
+                        {(isHovered || isEditing) && (
+                            <div className="category-actions">
+                                <button 
+                                    className="btn btn-secondary"
+                                    style={{ backgroundColor: node.color }}
+                                    onClick={onAddTodo}
+                                >
+                                    + 할일 추가
+                                </button>
+                                <button 
+                                    className="btn btn-secondary btn-folder"
+                                    style={{ 
+                                        backgroundColor: node.color,
+                                        opacity: 0.9
+                                    }}
+                                    onClick={onAddSection}
+                                >
+                                    📂
+                                </button>
+                                <button className="btn btn-secondary" onClick={handleSettingsClick}>
+                                    ⚙️
+                                </button>
+                                <button className="btn btn-danger" onClick={onDelete}>
+                                    🗑️
+                                </button>
+                            </div>
+                        )}
                     </>
                 )}
             </div>

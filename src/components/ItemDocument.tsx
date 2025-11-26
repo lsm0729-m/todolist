@@ -23,6 +23,7 @@ export const ItemDocument: React.FC<ItemDocumentProps> = ({
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(node.title);
     const [editPriority, setEditPriority] = useState<"high" | "medium" | "low">(node.priority);
+    const [isHovered, setIsHovered] = useState(false);
 
     const priorityClass = `priority-${node.priority}`;
     const priorityLabel = node.priority === 'high' ? '높음' : node.priority === 'medium' ? '중간' : '낮음';
@@ -47,7 +48,11 @@ export const ItemDocument: React.FC<ItemDocumentProps> = ({
     };
 
     return (
-        <div className="item-container">
+        <div 
+            className="item-container"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <div className={`item-main ${node.children.length > 0 ? 'has-children' : ''} ${isEditing ? 'editing' : ''}`}>
                 {isEditing ? (
                     // 편집 모드
@@ -125,20 +130,22 @@ export const ItemDocument: React.FC<ItemDocumentProps> = ({
                                 </div>
                             </div>
                         </div>
-                        <div className="item-actions">
-                            <button className="btn btn-add btn-small" onClick={onAddSubtask}>
-                                + 하위작업
-                            </button>
-                            <button className="btn btn-note btn-small" onClick={onAddNote}>
-                                📋
-                            </button>
-                            <button className="btn btn-edit btn-small" onClick={handleEditClick}>
-                                ⚙️
-                            </button>
-                            <button className="btn btn-delete btn-small" onClick={onDelete}>
-                                ✕
-                            </button>
-                        </div>
+                        {(isHovered || isEditing) && (
+                            <div className="item-actions">
+                                <button className="btn btn-add btn-small" onClick={onAddSubtask}>
+                                    + 하위작업
+                                </button>
+                                <button className="btn btn-note btn-small" onClick={onAddNote}>
+                                    📋
+                                </button>
+                                <button className="btn btn-edit btn-small" onClick={handleEditClick}>
+                                    ⚙️
+                                </button>
+                                <button className="btn btn-delete btn-small" onClick={onDelete}>
+                                    ✕
+                                </button>
+                            </div>
+                        )}
                     </>
                 )}
             </div>

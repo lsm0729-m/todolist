@@ -31,7 +31,7 @@ export function addNodeToTree( // parentId아이디 밑에 newNode 추가
 export function findNodeInTree( //targetId에 맞는 아이디 찾기
     node: DocumentNode | RootNode,
     targetId: string
-): DocumentNode | undefined {
+): DocumentNode | null {
     if ('id' in node && node.id === targetId) {
         return node as DocumentNode;
     }
@@ -43,7 +43,7 @@ export function findNodeInTree( //targetId에 맞는 아이디 찾기
         }
     } 
     
-    return undefined;
+    return null;
 }
 
 // Update Node

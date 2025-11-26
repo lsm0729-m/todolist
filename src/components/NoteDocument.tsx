@@ -14,6 +14,7 @@ export const NoteDocument: React.FC<NoteDocumentProps> = ({
 }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(node.content);
+    const [isHovered, setIsHovered] = useState(false);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -33,7 +34,11 @@ export const NoteDocument: React.FC<NoteDocumentProps> = ({
     };
 
     return (
-        <div className="note-container">
+        <div 
+            className="note-container"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <span className="note-icon">💡</span>
             
             {isEditing ? (
@@ -67,14 +72,16 @@ export const NoteDocument: React.FC<NoteDocumentProps> = ({
                             {node.content}
                         </div>
                     </div>
-                    <div className="note-actions">
-                        <button className="btn btn-warning btn-tiny" onClick={handleEditClick}>
-                            ✏️
-                        </button>
-                        <button className="btn btn-delete btn-tiny" onClick={onDelete}>
-                            ✕
-                        </button>
-                    </div>
+                    {(isHovered || isEditing) && (
+                        <div className="note-actions">
+                            <button className="btn btn-warning btn-tiny" onClick={handleEditClick}>
+                                ✏️
+                            </button>
+                            <button className="btn btn-delete btn-tiny" onClick={onDelete}>
+                                ✕
+                            </button>
+                        </div>
+                    )}
                 </>
             )}
         </div>
