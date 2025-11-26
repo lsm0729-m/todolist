@@ -1,10 +1,11 @@
 import React, { useState } from 'react'; 
-import { exampleTodoData as todoData } from "./interface/data";
+import { exampleTodoData, exampleTodoData as todoData } from "./interface/data";
 import { CategoryNode, ItemNode, NoteNode, RootNode, SectionNode, SubtaskNode } from './interface/todo';
 import { BaseDocumentRenderer, TodoHandlers } from './interface/Rander';
 import { RootDocument, CategoryDocument, SectionDocument, ItemDocument, SubtaskDocument, NoteDocument } from './components';
 import './App.css';
 import { updateNodeInTree, deleteNodeInTree, addNodeToTree } from './utils/treeUtils';
+import { useTodo } from './hooks/useTodo';
 
 
 class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
@@ -32,9 +33,7 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
 
 
                 onAddTodo={() => this.handlers.onAddTodoToCategory(node.id)} 
-                onAddSection={() => this.handlers.onAddSection(node.id)}
-
-                // [] 어떻게 수정하게 할건지 고민해서 구현  
+                onAddSection={() => this.handlers.onAddSection(node.id)} 
                 onSettings={(newTitle: string, newColor: string) => this.handlers.onUpdateCategorySettings(node.id, newTitle, newColor)} 
 
                 onDelete={() => this.handlers.onDeleteCategory(node.id)}
@@ -108,167 +107,8 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
     }
 }
 
-// 아이디 생성 함수 
-const createId = () => {
-    return crypto.randomUUID();
-}
-
 export const App: React.FC = () => {
-
-    const [data, setData] = useState<RootNode>(todoData);
-
-    const handlers: TodoHandlers = {
-
-        onToggleSection: (sectionId: string) => {
-            setData(updateNodeInTree(data, sectionId, (node) => ({
-                ...node,
-                collapsed: !(node as SectionNode).collapsed
-            })) as RootNode);
-        },
-        
-        onAddTodoItem: (sectionId: string) => {
-            const newTodo: ItemNode = {
-                type: "TodoItem",
-                id: createId(),
-                title: "새 할일",
-                completed: false,
-                priority: "medium",
-                dueDate: new Date().toISOString(),
-                children: []
-            };
-            setData(addNodeToTree(data, sectionId, newTodo) as RootNode);
-        },
-
-        onAddCategory: () => {
-            const newCategory: CategoryNode = {
-                type: "TodoCategory",
-                id: createId(),
-                title: "새 카테고리",
-                color: "#6366f1",
-                children: []
-            };
-            setData(({
-                ...data,
-                children: [...data.children, newCategory]
-            }) );
-        },
-
-        onDeleteCategory: (categoryId: string) => {
-            setData(deleteNodeInTree(data, categoryId) as RootNode);
-        },
-
-        onUpdateCategorySettings: (categoryId: string, newTitle: string, newColor: string) => {
-            setData(updateNodeInTree(data, categoryId, (node) => ({
-                ...node,
-                title: newTitle,
-                color: newColor
-            } as CategoryNode)) as RootNode);
-        },
-
-        onAddTodoToCategory: (categoryId: string) => {
-            const newTodo: ItemNode = {
-                type: "TodoItem",
-                id: createId(),
-                title: "새 할일",
-                completed: false,
-                priority: "medium",
-                dueDate: new Date().toISOString(),
-                children: []
-            };
-            setData(prev => addNodeToTree(prev, categoryId, newTodo) as RootNode);
-        },
-
-        onToggleItem: (itemId: string) => {
-            setData(updateNodeInTree(data, itemId, (node) => ({
-                ...node,
-                completed: !(node as ItemNode).completed
-            })) as RootNode);
-        },
-
-        onAddSubtask: (itemId: string) => {
-            const newSubtask: SubtaskNode = {
-                type: "TodoSubtask",
-                id: createId(),
-                title: "새 서브태스크",
-                completed: false
-            };
-            setData(addNodeToTree(data, itemId, newSubtask) as RootNode);
-        },
-
-        onAddSection: (categoryId: string) => {
-            const newSection: SectionNode = {
-                type: "TodoSection",
-                id: createId(),
-                title: "새 섹션",
-                collapsed: false,
-                children: []
-            };
-            setData(addNodeToTree(data, categoryId, newSection) as RootNode);
-        },
-
-        onAddNote: (itemId: string) => {
-            const newNote: NoteNode = {
-                type: "TodoNote",
-                id: createId(),
-                content: "새 노트"
-            };
-            setData(prev => addNodeToTree(prev, itemId, newNote) as RootNode);
-        },
-
-        onEditItem: (itemId: string, newTitle: string, newPriority: "high" | "medium" | "low") => {
-            setData(prev => updateNodeInTree(prev, itemId, (node) => ({
-                ...node,
-                title: newTitle,
-                priority: newPriority
-            } as ItemNode)) as RootNode);
-        },
-
-        onEditSection: (sectionId: string, newTitle: string) => {
-            setData(updateNodeInTree(data, sectionId, (node) => ({
-                ...node,
-                title: newTitle
-            } as SectionNode)) as RootNode);
-        },
-
-        onDeleteItem: (itemId: string) => {
-            setData(deleteNodeInTree(data, itemId) as RootNode);
-        },
-
-        onDeleteSection:(sectionId: string) => {
-            setData(deleteNodeInTree(data, sectionId) as RootNode);
-        },
-
-        // Subtask 관련 핸들러
-        onToggleSubtask: (subtaskId: string) => {
-            setData(updateNodeInTree(data, subtaskId, (node) => ({
-                ...node,
-                completed: !(node as SubtaskNode).completed
-            } as SubtaskNode)) as RootNode);
-        },
-
-        onEditSubtask: (subtaskId: string, newTitle: string) => {
-            console.log('newTitle', newTitle, subtaskId);
-            setData(updateNodeInTree(data, subtaskId, (node) => ({
-                ...node,
-                title: newTitle
-            } as SubtaskNode)) as RootNode);
-        },
-
-        onDeleteSubtask: (subtaskId: string) => {
-            setData(deleteNodeInTree(data, subtaskId) as RootNode);
-        },
-
-        onEditNote: (noteId: string, newContent: string) => {
-            setData(updateNodeInTree(data, noteId, (node) => ({
-                ...node,
-                content: newContent
-            } as NoteNode)) as RootNode);
-        },
-
-        onDeleteNote: (noteId: string) => {
-            setData(deleteNodeInTree(data, noteId) as RootNode);
-        }
-    };
+    const { data, handlers } = useTodo(exampleTodoData);
 
     const renderer = new ReactTodoRenderer(handlers);
     return <div>{renderer.RenderRoot(data)}</div>;

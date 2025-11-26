@@ -42,7 +42,6 @@ export function findNodeInTree( //targetId에 맞는 아이디 찾기
             if (found) return found;
         }
     } 
-    
     return null;
 }
 
