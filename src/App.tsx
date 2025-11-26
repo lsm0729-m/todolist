@@ -10,8 +10,11 @@ import { useTodo } from './hooks/useTodo';
 
 class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
 
-    constructor(private handlers: TodoHandlers) {
+    private handlers: TodoHandlers
+
+    constructor(handlers: TodoHandlers) {
         super();
+        this.handlers = handlers;
     }
 
     RenderRoot(node: RootNode): React.ReactNode {
@@ -30,7 +33,6 @@ class ReactTodoRenderer extends BaseDocumentRenderer<React.ReactNode> {
             <CategoryDocument
                 key={node.id}
                 node={node}
-
 
                 onAddTodo={() => this.handlers.onAddTodoToCategory(node.id)} 
                 onAddSection={() => this.handlers.onAddSection(node.id)} 

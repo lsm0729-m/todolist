@@ -1,23 +1,19 @@
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { CategoryNode, ItemNode, NoteNode, RootNode, SectionNode, SubtaskNode } from '../interface/todo';
 import { TodoHandlers } from '../interface/Rander';
-import { updateNodeInTree, deleteNodeInTree, addNodeToTree } from '../utils/treeUtils';
 import { exampleTodoData } from '../interface/data';
-
+import { todoReducer } from '../reducers/todoReducer';
 
 const createId = () => {
     return crypto.randomUUID();
 };
 
 export const useTodo = (initialData?: RootNode) => {
-    const [data, setData] = useState<RootNode>(initialData || exampleTodoData);
+    const [data, dispatch] = useReducer(todoReducer, initialData || exampleTodoData);
 
     const handlers: TodoHandlers = {
         onToggleSection: (sectionId: string) => {
-            setData(prev => updateNodeInTree(prev, sectionId, (node) => ({
-                ...node,
-                collapsed: !(node as SectionNode).collapsed
-            })) as RootNode);
+            dispatch({ type: 'TOGGLE_SECTION', payload: sectionId });
         },
         
         onAddTodoItem: (sectionId: string) => {
@@ -30,7 +26,7 @@ export const useTodo = (initialData?: RootNode) => {
                 dueDate: new Date().toISOString(),
                 children: []
             };
-            setData(prev => addNodeToTree(prev, sectionId, newTodo) as RootNode);
+            dispatch({ type: 'ADD_TODO_ITEM', payload: { sectionId, todo: newTodo } });
         },
 
         onAddCategory: () => {
@@ -41,22 +37,18 @@ export const useTodo = (initialData?: RootNode) => {
                 color: "#6366f1",
                 children: []
             };
-            setData(prev => ({
-                ...prev,
-                children: [...prev.children, newCategory]
-            }));
+            dispatch({ type: 'ADD_CATEGORY', payload: newCategory });
         },
 
         onDeleteCategory: (categoryId: string) => {
-            setData(prev => deleteNodeInTree(prev, categoryId) as RootNode);
+            dispatch({ type: 'DELETE_CATEGORY', payload: categoryId });
         },
 
         onUpdateCategorySettings: (categoryId: string, newTitle: string, newColor: string) => {
-            setData(prev => updateNodeInTree(prev, categoryId, (node) => ({
-                ...node,
-                title: newTitle,
-                color: newColor
-            } as CategoryNode)) as RootNode);
+            dispatch({ 
+                type: 'UPDATE_CATEGORY_SETTINGS', 
+                payload: { categoryId, newTitle, newColor } 
+            });
         },
 
         onAddTodoToCategory: (categoryId: string) => {
@@ -69,14 +61,11 @@ export const useTodo = (initialData?: RootNode) => {
                 dueDate: new Date().toISOString(),
                 children: []
             };
-            setData(prev => addNodeToTree(prev, categoryId, newTodo) as RootNode);
+            dispatch({ type: 'ADD_TODO_TO_CATEGORY', payload: { categoryId, todo: newTodo } });
         },
 
         onToggleItem: (itemId: string) => {
-            setData(prev => updateNodeInTree(prev, itemId, (node) => ({
-                ...node,
-                completed: !(node as ItemNode).completed
-            })) as RootNode);
+            dispatch({ type: 'TOGGLE_ITEM', payload: itemId });
         },
 
         onAddSubtask: (itemId: string) => {
@@ -86,7 +75,7 @@ export const useTodo = (initialData?: RootNode) => {
                 title: "새 서브태스크",
                 completed: false
             };
-            setData(prev => addNodeToTree(prev, itemId, newSubtask) as RootNode);
+            dispatch({ type: 'ADD_SUBTASK', payload: { itemId, subtask: newSubtask } });
         },
 
         onAddSection: (categoryId: string) => {
@@ -97,7 +86,7 @@ export const useTodo = (initialData?: RootNode) => {
                 collapsed: false,
                 children: []
             };
-            setData(prev => addNodeToTree(prev, categoryId, newSection) as RootNode);
+            dispatch({ type: 'ADD_SECTION', payload: { categoryId, section: newSection } });
         },
 
         onAddNote: (itemId: string) => {
@@ -106,60 +95,56 @@ export const useTodo = (initialData?: RootNode) => {
                 id: createId(),
                 content: "새 노트"
             };
-            setData(prev => addNodeToTree(prev, itemId, newNote) as RootNode);
+            dispatch({ type: 'ADD_NOTE', payload: { itemId, note: newNote } });
         },
 
         onEditItem: (itemId: string, newTitle: string, newPriority: "high" | "medium" | "low") => {
-            setData(prev => updateNodeInTree(prev, itemId, (node) => ({
-                ...node,
-                title: newTitle,
-                priority: newPriority
-            } as ItemNode)) as RootNode);
+            dispatch({ 
+                type: 'EDIT_ITEM', 
+                payload: { itemId, newTitle, newPriority } 
+            });
         },
 
         onEditSection: (sectionId: string, newTitle: string) => {
-            setData(prev => updateNodeInTree(prev, sectionId, (node) => ({
-                ...node,
-                title: newTitle
-            } as SectionNode)) as RootNode);
+            dispatch({ 
+                type: 'EDIT_SECTION', 
+                payload: { sectionId, newTitle } 
+            });
         },
 
         onDeleteItem: (itemId: string) => {
-            setData(prev => deleteNodeInTree(prev, itemId) as RootNode);
+            dispatch({ type: 'DELETE_ITEM', payload: itemId });
         },
 
         onDeleteSection: (sectionId: string) => {
-            setData(prev => deleteNodeInTree(prev, sectionId) as RootNode);
+            dispatch({ type: 'DELETE_SECTION', payload: sectionId });
         },
 
         onToggleSubtask: (subtaskId: string) => {
-            setData(prev => updateNodeInTree(prev, subtaskId, (node) => ({
-                ...node,
-                completed: !(node as SubtaskNode).completed
-            } as SubtaskNode)) as RootNode);
+            dispatch({ type: 'TOGGLE_SUBTASK', payload: subtaskId });
         },
 
         onEditSubtask: (subtaskId: string, newTitle: string) => {
             console.log('newTitle', newTitle, subtaskId);
-            setData(prev => updateNodeInTree(prev, subtaskId, (node) => ({
-                ...node,
-                title: newTitle
-            } as SubtaskNode)) as RootNode);
+            dispatch({ 
+                type: 'EDIT_SUBTASK', 
+                payload: { subtaskId, newTitle } 
+            });
         },
 
         onDeleteSubtask: (subtaskId: string) => {
-            setData(prev => deleteNodeInTree(prev, subtaskId) as RootNode);
+            dispatch({ type: 'DELETE_SUBTASK', payload: subtaskId });
         },
 
         onEditNote: (noteId: string, newContent: string) => {
-            setData(prev => updateNodeInTree(prev, noteId, (node) => ({
-                ...node,
-                content: newContent
-            } as NoteNode)) as RootNode);
+            dispatch({ 
+                type: 'EDIT_NOTE', 
+                payload: { noteId, newContent } 
+            });
         },
 
         onDeleteNote: (noteId: string) => {
-            setData(prev => deleteNodeInTree(prev, noteId) as RootNode);
+            dispatch({ type: 'DELETE_NOTE', payload: noteId });
         }
     };
 
